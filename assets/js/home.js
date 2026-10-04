@@ -6,9 +6,10 @@
   const { $, $$, esc } = C;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TRENDS = [['walkin', 'Walk-in'], ['spin', 'Outfit spin'], ['flip', 'Hair flip'], ['dance', 'Dance'], ['react', 'Reaction'], ['zoom', 'Crash zoom'], ['grwm', 'GRWM'], ['vlog', 'Vlog']];
-  const CREATORS = [1, 2, 3, 4, 5, 6];
-  const HANDLES = ['@mila.on.air', '@juno.gloss', '@coach.dex', '@sol.motion', '@leo.departures', '@max.mornings'];
-  const TREND_IMG = { walkin: 5, spin: 4, flip: 2, dance: 4, react: 1, zoom: 3, grwm: 2, vlog: 6 };
+  const CREATORS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const HANDLES = ['@capy.grwm', '@goldie.news', '@chef.whiskers', '@dj.ribbit', '@shrimp.spa', '@horse.on.business', '@pod.penguin', '@raccoon.eats', '@gym.hammy', '@goat.fits'];
+  const SLOP = n => '/api/slop?n=' + n;
+  const TREND_IMG = { walkin: 6, spin: 10, flip: 5, dance: 4, react: 8, zoom: 9, grwm: 1, vlog: 7 };
   const st = { face: null, faceUrl: null, trend: 'walkin', job: null, vid: null, busy: false, born: null, open: null, board: null, sort: 'new', shown: 24, reel: [], handle: '' };
   const status = (el, t, bad) => { el.textContent = t || ''; el.classList.toggle('bad', !!bad); };
 
@@ -31,7 +32,7 @@
         scr.replaceChildren(v); v.play().catch(() => {});
         timer = setTimeout(() => { i++; show(); }, 12000);
       } else {
-        dur = 6000; const im = new Image(); im.src = '/assets/img/c' + n + '.jpg'; im.alt = ''; im.className = 'in' + (calm ? '' : ' kb');
+        dur = 6000; const im = new Image(); im.src = SLOP(n); im.alt = ''; im.className = 'in' + (calm ? '' : ' kb');
         scr.replaceChildren(im); timer = setTimeout(() => { i++; show(); }, dur);
       }
       if (!calm) requestAnimationFrame(tickBar);
@@ -45,7 +46,7 @@
     const byTrend = {}; st.reel.forEach(r => { if (!byTrend[r.trend]) byTrend[r.trend] = r; });
     $('#trendGrid').innerHTML = TRENDS.map(([k, label], i) => {
       const r = byTrend[k];
-      const media = r ? `<video src="${r.url}" muted playsinline loop preload="metadata"></video>` : `<img src="/assets/img/c${TREND_IMG[k]}.jpg" alt="" loading="lazy">`;
+      const media = r ? `<video src="${r.url}" muted playsinline loop preload="metadata"></video>` : `<img src="${SLOP(TREND_IMG[k])}" alt="" loading="lazy">`;
       return `<button type="button" class="tr" data-t="${k}" style="--d:${(i % 4) * .06}s">${media}<em>${r ? '▶ real AI video' : 'trend'}</em><b>${esc(label)}</b></button>`;
     }).join('');
     $$('#trendGrid .tr').forEach(b => {
@@ -214,7 +215,7 @@
   async function loadBoard(hit) {
     let j = null; try { j = await C.get('/api/board'); } catch {}
     if (!j || !j.ok) { if (!st.board) { $('#nursery').innerHTML = `<div class="none"><b>the records didn’t answer</b><button class="btn line sm" type="button" id="retryBoard">try again ↻</button></div>`; const r = $('#retryBoard'); if (r) r.onclick = () => loadBoard(); renderFeed(); } return; }
-    st.board = j; if (j.open != null) st.open = j.open; refreshGo();
+    st.board = j; if (j.open != null) st.open = j.open; refreshGo(); const hb = $('#hfBadge'); if (hb) hb.hidden = !j.hf;
     renderCoins(hit); renderFeed();
     if (L) L.watch((j.infl || []).slice(0, 200).map(k => k.mint));
   }
@@ -231,7 +232,7 @@
 
   // ---------- motion: the creator wall, the phone that follows the pointer, tilting trend cards, a cursor dot ----------
   (function motion() {
-    const cards = (start) => { let h = ''; for (let k = 0; k < 12; k++) { const n = ((k + start) % 6) + 1; h += `<div class="wc"><img src="/assets/img/c${n}.jpg" alt="" loading="lazy"><span>${TRENDS[(k + start) % 8][1]}</span><i style="--dl:-${(k * 0.7).toFixed(1)}s"></i></div>`; } return h + h; };
+    const cards = (start) => { let h = ''; for (let k = 0; k < 10; k++) { const n = ((k + start) % 10) + 1; h += `<div class="wc"><img src="${SLOP(n)}" alt="" loading="lazy"><span>${TRENDS[(k + start) % 8][1]}</span><i style="--dl:-${(k * 0.7).toFixed(1)}s"></i></div>`; } return h + h; };
     $$('.wall .row').forEach((r, i) => { r.querySelector('.rt').innerHTML = cards(i * 3); });
     if (calm || matchMedia('(hover: none)').matches) return;
     const ph = $('.stage .ph.main'), stage = $('.stage');
