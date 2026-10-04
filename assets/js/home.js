@@ -6,10 +6,10 @@
   const { $, $$, esc } = C;
   const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const TRENDS = [['walkin', 'Walk-in'], ['spin', 'Outfit spin'], ['flip', 'Hair flip'], ['dance', 'Dance'], ['react', 'Reaction'], ['zoom', 'Crash zoom'], ['grwm', 'GRWM'], ['vlog', 'Vlog']];
-  const CREATORS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const CREATORS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const HANDLES = ['@capy.grwm', '@goldie.news', '@chef.whiskers', '@dj.ribbit', '@shrimp.spa', '@horse.on.business', '@pod.penguin', '@raccoon.eats', '@gym.hammy', '@goat.fits'];
   const SLOP = n => '/api/slop?n=' + n;
-  const TREND_IMG = { walkin: 6, spin: 10, flip: 5, dance: 4, react: 8, zoom: 9, grwm: 1, vlog: 7 };
+  const TREND_IMG = { walkin: 6, spin: 2, flip: 5, dance: 4, react: 8, zoom: 9, grwm: 1, vlog: 7 };
   const st = { face: null, faceUrl: null, trend: 'walkin', job: null, vid: null, busy: false, born: null, open: null, board: null, sort: 'new', shown: 24, reel: [], handle: '' };
   const status = (el, t, bad) => { el.textContent = t || ''; el.classList.toggle('bad', !!bad); };
 
@@ -232,7 +232,7 @@
 
   // ---------- motion: the creator wall, the phone that follows the pointer, tilting trend cards, a cursor dot ----------
   (function motion() {
-    const cards = (start) => { let h = ''; for (let k = 0; k < 10; k++) { const n = ((k + start) % 10) + 1; h += `<div class="wc"><img src="${SLOP(n)}" alt="" loading="lazy"><span>${TRENDS[(k + start) % 8][1]}</span><i style="--dl:-${(k * 0.7).toFixed(1)}s"></i></div>`; } return h + h; };
+    const cards = (start) => { let h = ''; for (let k = 0; k < 9; k++) { const n = ((k + start) % 9) + 1; h += `<div class="wc"><img src="${SLOP(n)}" alt="" loading="lazy"><span>${TRENDS[(k + start) % 8][1]}</span><i style="--dl:-${(k * 0.7).toFixed(1)}s"></i></div>`; } return h + h; };
     $$('.wall .row').forEach((r, i) => { r.querySelector('.rt').innerHTML = cards(i * 3); });
     if (calm || matchMedia('(hover: none)').matches) return;
     const ph = $('.stage .ph.main'), stage = $('.stage');
