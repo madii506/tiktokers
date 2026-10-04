@@ -290,3 +290,5 @@ body { animation: pagein .6s ease both; }
 .pw { margin: 18px 0 0; font: 700 14px/1 var(--d); letter-spacing: .16em; text-transform: uppercase; color: var(--mut); opacity: 0; animation: up .8s cubic-bezier(.2, .8, .2, 1) .75s forwards; }
 .pw b { color: #fff; }
 .pw[hidden] { display: none; }
+.toast { visibility: hidden; transform: translate(-50%, 220%); transition: transform .3s, visibility 0s .3s; }
+.toast.on { visibility: visible; transform: translate(-50%, 0); transition: transform .3s; }
