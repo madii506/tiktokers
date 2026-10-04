@@ -287,3 +287,6 @@ body { animation: pagein .6s ease both; }
 @media (hover: none) { .cursor-dot { display: none; } }
 @media (prefers-reduced-motion: reduce) { .h1 .w > span, .hl .sub, .hl .ctas, .stage .ph.main, .ph.side, .row .rt, body { animation: none !important; transform: none; opacity: 1; } .cursor-dot { display: none; } }
 @media (max-width: 560px) { .wc { width: 116px; } .wall { padding: 18px 0 20px; } }
+.pw { margin: 18px 0 0; font: 700 14px/1 var(--d); letter-spacing: .16em; text-transform: uppercase; color: var(--mut); opacity: 0; animation: up .8s cubic-bezier(.2, .8, .2, 1) .75s forwards; }
+.pw b { color: #fff; }
+.pw[hidden] { display: none; }
