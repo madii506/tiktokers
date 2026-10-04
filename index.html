@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>TIKTOKERS</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Every coin needs a TikToker. Describe one in a line, watch it film the trends, and launch it on pump.fun with its own token.">
+<meta name="theme-color" content="#08080a">
+<meta property="og:title" content="TIKTOKERS">
+<meta property="og:description" content="Every coin needs a TikToker.">
+<meta property="og:image" content="https://tiktokers.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="/assets/img/fav-64.png">
+<link rel="apple-touch-icon" href="/assets/img/fav-180.png">
+<link rel="preload" href="/assets/fonts/BC-Black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/tt.css?v=1">
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="/" aria-label="TIKTOKERS"><img src="/assets/img/fav-64.png" alt=""><span class="gl" data-t="TIKTOKERS">TIKTOKERS</span></a>
+  <nav class="nav" aria-label="Sections"><a href="#trends">trends</a><a href="#create">create</a><a href="#foryou">for you</a><a href="#coins">coins</a><a href="#faq">faq</a></nav>
+  <button class="wallet" id="walletBtn" type="button"><i></i><span>connect</span></button>
+</header>
+<span id="live-sr" class="sr" aria-live="polite"></span>
+<main>
+  <section class="hero">
+    <div class="hl">
+      <h1 class="h1">Every coin<br>needs a <span class="gl" data-t="TikToker">TikToker</span>.</h1>
+      <p class="sub">Describe a creator in one line. It gets a face, films the trends in real AI video, and launches on pump.fun with its own token. Your coin’s TikTok, no camera needed.</p>
+      <div class="ctas"><a class="btn" href="#create">make your TikToker</a><a class="btn line" href="#trends">see the trends</a></div>
+    </div>
+    <div class="stage" aria-label="AI TikTokers">
+      <div class="ph side l" aria-hidden="true"><img src="/assets/img/c3.jpg" alt=""></div>
+      <div class="ph side r" aria-hidden="true"><img src="/assets/img/c4.jpg" alt=""></div>
+      <div class="ph main" id="reel">
+        <div class="scr" id="reelScr"><img id="reelImg" src="/assets/img/c1.jpg" alt=""></div>
+        <div class="ui"><div class="rail"><i class="hrt"></i><i class="cmt"></i><i class="shr"></i></div><div class="cap"><b id="reelWho">@ai.creator</b><span id="reelCap">walk-in · AI-generated</span></div><div class="prog"><i id="reelBar"></i></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker" aria-hidden="true"><div class="tk"><span>walk-in</span><span>outfit spin</span><span>hair flip</span><span>dance</span><span>reaction</span><span>crash zoom</span><span>grwm</span><span>vlog</span><span>walk-in</span><span>outfit spin</span><span>hair flip</span><span>dance</span><span>reaction</span><span>crash zoom</span><span>grwm</span><span>vlog</span></div></div>
+
+  <section class="sec" id="trends">
+    <div class="wrap">
+      <header class="sh"><span>01</span><h2>pick a trend</h2></header>
+      <div class="trends" id="trendGrid"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="create">
+    <div class="wrap">
+      <header class="sh"><span>02</span><h2>make your TikToker</h2></header>
+      <div class="studio">
+        <div class="steps3">
+          <div class="st" id="s1">
+            <b class="n">1</b><h3>who are they?</h3>
+            <textarea id="line" maxlength="300" rows="3" placeholder="a 24-year-old skater from Lisbon who rates street food"></textarea>
+            <div class="acts"><button class="btn" id="faceBtn" type="button">make my TikToker</button></div>
+            <p class="status" id="faceStatus" role="status"></p>
+          </div>
+          <div class="st" id="s2">
+            <b class="n">2</b><h3>film a trend</h3>
+            <div class="chips" id="trendPick"></div>
+            <div class="acts"><button class="btn" id="filmBtn" type="button" disabled>film it</button></div>
+            <p class="status" id="filmStatus" role="status"></p>
+          </div>
+          <div class="st" id="s3">
+            <b class="n">3</b><h3>launch its coin</h3>
+            <div class="nt">
+              <label class="fld"><span>name</span><input id="nm" maxlength="32" autocomplete="off" spellcheck="false"></label>
+              <label class="fld"><span>ticker</span><input id="tk" maxlength="10" autocomplete="off" spellcheck="false" autocapitalize="characters"></label>
+            </div>
+            <label class="fld"><span>the coin’s X <em>optional</em></span><input id="xh" maxlength="16" autocomplete="off" spellcheck="false" placeholder="@"></label>
+            <dl class="split" id="split"></dl>
+            <div class="chips buy" id="buyBox"></div>
+            <div class="acts"><button class="btn" id="goBtn" type="button">Connect wallet to launch</button></div>
+            <div class="lsteps" id="goProg" hidden></div>
+            <p class="status" id="goStatus" role="status"></p>
+            <div id="goRes" hidden></div>
+          </div>
+        </div>
+        <div class="preview">
+          <div class="ph big" id="pv">
+            <div class="scr" id="pvScr"><div class="empty" id="pvEmpty"><span class="gl" data-t="T">T</span><p>your TikToker shows up here</p></div></div>
+            <div class="ui"><div class="cap"><b id="pvWho">@your.tiktoker</b><span id="pvCap"></span></div></div>
+          </div>
+          <div class="kit" id="kit" hidden>
+            <div class="kr"><span>handle</span><b id="kHandle"></b><button type="button" class="mini" data-copyk="kHandle">copy</button></div>
+            <div class="kr"><span>caption</span><b id="kCap"></b><button type="button" class="mini" data-copyk="kCap">copy</button></div>
+            <div class="kacts"><a class="btn line sm" id="dlFace" download="tiktoker.jpg" href="#">save the photo</a><a class="btn sm" id="dlVid" download="tiktoker.mp4" href="#" hidden>download the video</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="foryou">
+    <div class="wrap">
+      <header class="sh"><span>03</span><h2>for you</h2></header>
+      <div class="fy" id="feed"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="coins">
+    <div class="wrap">
+      <header class="sh"><span>04</span><h2>tiktokers live</h2><span class="tabs" id="sorts"><button type="button" data-s="new" class="on">newest</button><button type="button" data-s="heavy">biggest</button></span></header>
+      <div class="coins" id="nursery"></div>
+      <button class="btn line more" id="moreBtn" type="button" hidden>more</button>
+    </div>
+  </section>
+
+  <section class="sec" id="faq">
+    <div class="wrap">
+      <header class="sh"><span>05</span><h2>how it works</h2></header>
+      <ol class="how">
+        <li><b>one line</b><p>Describe your TikToker. It becomes a fictional adult creator with its own face, made with FLUX.</p></li>
+        <li><b>a trend</b><p>Pick one of eight trends and it films a real 5-second vertical AI video. Your first test videos are free.</p></li>
+        <li><b>a coin</b><p>Name it and launch it on pump.fun from your own wallet. The name becomes the ticker.</p></li>
+        <li><b>a new video every 6 hours</b><p>While the coin trades, its TikToker films the next trend. Download it and post it on the coin’s TikTok.</p></li>
+      </ol>
+      <div class="faq">
+        <details><summary>what is TIKTOKERS?</summary><p>A launchpad where every coin comes with an AI TikToker: a fictional creator that films short vertical videos for it. You launch on pump.fun; the TikToker keeps filming new trends while the coin trades.</p></details>
+        <details><summary>does it post on TikTok for me?</summary><p>No. TikTok doesn’t let apps open accounts, so you make the coin’s TikTok account yourself in a minute. Every video has a download button and a ready caption; you post it. Turn on TikTok’s AI-generated label when you do.</p></details>
+        <details><summary>how are the videos made?</summary><p>The face is made with FLUX. The videos are image-to-video from that face, made with Seedance (Wan as the backup) through Vercel’s AI Gateway. Captions come from a small OpenAI model. Every video is 5 seconds, vertical, silent.</p></details>
+        <details><summary>who gets the fees?</summary><p>pump.fun’s own fee sharing splits every creator fee, locked in the same signatures that launch the coin: 70% to you, 30% to the house, which pays for every video. Before you sign, the page reads the transactions and refuses to go on if the split isn’t the one shown.</p></details>
+        <details><summary>how often does it film?</summary><p>One video right after launch, then one every six hours while the coin trades. A day without a trade and it slows down; seven days and it stops. The house has a daily video budget; if it runs out, filming resumes at 00:00 UTC.</p></details>
+        <details><summary>can I make a real person?</summary><p>No. Every TikToker is a fictional adult. Ideas that ask for a real or famous person, a minor or anything sexual are refused before a photo is made. There are no uploads of real faces.</p></details>
+        <details><summary>is this TikTok?</summary><p>No. TIKTOKERS is independent and not affiliated with TikTok or ByteDance.</p></details>
+        <details><summary>does TIKTOKERS hold my keys?</summary><p>No. You sign everything in your own wallet and the server has no key. The house is a public address; its share arrives through pump.fun’s split.</p></details>
+      </div>
+    </div>
+  </section>
+</main>
+<div class="sheet-w" id="sheet" hidden><div class="boxw" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="bar2"><span id="sheetTitle"></span><button class="x" id="sheetX" type="button" aria-label="Close">×</button></div><div class="inner" id="sheetBody"></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/assets/js/core.js?v=1"></script>
+<script src="/assets/js/live.js?v=1"></script>
+<script src="/assets/js/cross.js?v=1"></script>
+<script src="/assets/js/home.js?v=1"></script>
+</body>
+</html>
