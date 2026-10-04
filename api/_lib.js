@@ -273,6 +273,30 @@ async function videoBytes(v) {
   if (v.type === 'url' && v.url) { const r = await fetch(v.url, { signal: AbortSignal.timeout(40000) }); if (!r.ok) return null; return Buffer.from(await r.arrayBuffer()); }
   return null;
 }
+// Higgsfield (api.higgsfield.ai), used first when its key is set in the project's environment as HF_CREDENTIALS
+// ("KEY_ID:KEY_SECRET"): image-to-video with DoP from the portrait's public URL. Without a key, the AI Gateway films.
+const HF = (process.env.HF_CREDENTIALS || (process.env.HF_API_KEY && process.env.HF_API_SECRET ? process.env.HF_API_KEY + ':' + process.env.HF_API_SECRET : '')).trim();
+const HF_MODEL = (process.env.HF_VIDEO_MODEL || 'dop-turbo').trim();
+async function hfStart(prompt, imageUrl) {
+  if (!HF) return { ok: false, error: 'no higgsfield key' };
+  try {
+    const r = await getJson('https://api.higgsfield.ai/v1/image2video/dop', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Key ' + HF },
+      body: JSON.stringify({ model: HF_MODEL, prompt, input_images: [{ type: 'image_url', image_url: imageUrl }] }) }, 30000);
+    const id = r.json && (r.json.request_id || r.json.id);
+    if (r.ok && id) return { ok: true, model: 'higgsfield/' + HF_MODEL, operation: { hf: id } };
+    return { ok: false, error: 'higgsfield: ' + errText(r) };
+  } catch (e) { return { ok: false, error: 'higgsfield: ' + String(e && e.message).slice(0, 200) }; }
+}
+async function hfStatus(id) {
+  try {
+    const r = await getJson('https://api.higgsfield.ai/requests/' + encodeURIComponent(id) + '/status', { headers: { authorization: 'Key ' + HF } }, 20000);
+    const j = r.json || {};
+    if (j.status === 'completed') { const u = (j.video && j.video.url) || (j.videos && j.videos[0] && j.videos[0].url) || (j.jobs && j.jobs[0] && j.jobs[0].results && j.jobs[0].results.raw && j.jobs[0].results.raw.url); return { ok: true, status: 'completed', video: u ? { type: 'url', url: u } : null }; }
+    if (['failed', 'nsfw', 'cancelled', 'canceled'].includes(j.status)) return { ok: true, status: 'error', error: j.status };
+    if (['queued', 'in_progress', 'pending', 'processing'].includes(j.status)) return { ok: true, status: 'pending' };
+    return { ok: false, error: errText(r) };
+  } catch (e) { return { ok: false, error: String(e && e.message).slice(0, 200) }; }
+}
 async function spendVid() {
   const r = await q(`UPDATE t0_state SET vids = CASE WHEN vids_day = (now() AT TIME ZONE 'utc')::date THEN vids + 1 ELSE 1 END, vids_day = (now() AT TIME ZONE 'utc')::date
     WHERE id=1 AND (vids_day IS DISTINCT FROM (now() AT TIME ZONE 'utc')::date OR vids < $1) RETURNING vids`, [DAILY_VIDS]);
@@ -297,5 +321,5 @@ module.exports = {
   isAddr, metaId, origin, b58enc, b58dec, pda, SYSTEM, STUDIO, YOURS, PARENT, HOUSE, sharesOf,
   PUMP, PUMP_FEES, bondingCurveOf, sharingConfigOf, vaultOf, RENT0, accounts, RPC_URL, solPrice, q, ready, dbReady, log,
   setOidc, gatewayToken, ai, photo, spendShot, MODEL, IMG_EDIT, DAILY_SHOTS, MOCK, BANNED, clean, scrub, parseJson,
-  videoStart, videoStatus, videoBytes, spendVid, DAILY_VIDS, VID_MODELS, lastVidError: () => lastVidError,
+  videoStart, videoStatus, videoBytes, spendVid, DAILY_VIDS, VID_MODELS, lastVidError: () => lastVidError, HF: !!HF, hfStart, hfStatus,
 };

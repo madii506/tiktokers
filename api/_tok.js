@@ -74,14 +74,14 @@ const RULES = 'Rules: no financial advice, no price predictions, no promises of 
 // one line → a fictional adult creator's look, screened: never a real person, never a minor, nothing sexual
 async function lookOf(line) {
   const r = await L.ai([
-    { role: 'system', content: 'You turn a one-line idea for an AI TikTok creator into a photo description for an image model. The creator is always a fictional adult aged 21 to 45, never a real, famous or named person, never a child or teen, never sexual, nude or revealing, no brands or logos. If the idea asks for a real or famous person, a minor, or sexual content, refuse. Reply with JSON only: {"ok":true,"look":"under 60 words: age, face, hair, outfit, setting and vibe","niche":"what they post, 2 to 4 words","handle":"a short lowercase TikTok handle idea, letters, digits, dots or underscores, no @"} or {"ok":false,"why":"one short sentence"}.' },
+    { role: 'system', content: 'You turn a one-line idea for an AI TikTok creator into a photo description for an image model. The creator can be an animal, a creature, an object with a face or a person; viral AI-slop energy is welcome. A person is always a fictional adult aged 21 to 45. Never a real, famous or named person, never a known cartoon, game or movie character, never a child or teen, never sexual, nude or revealing, no brands or logos. If the idea asks for a real or famous person, a known character, a minor, or sexual content, refuse. Reply with JSON only: {"ok":true,"look":"under 60 words: who or what it is, look, outfit, setting and vibe","niche":"what they post, 2 to 4 words","handle":"a short lowercase TikTok handle idea, letters, digits, dots or underscores, no @"} or {"ok":false,"why":"one short sentence"}.' },
     { role: 'user', content: L.clean(line, 300) }], 220, 20000);
   if (!r.ok) return { ok: false, error: 'The idea didn’t go through. Try again.' };
   const j = L.parseJson(r.text) || {};
-  if (j.ok !== true || !j.look) return { ok: false, error: L.clean(j.why, 160) || 'That one can’t be made here: TikTokers are fictional adults.' };
+  if (j.ok !== true || !j.look) return { ok: false, error: L.clean(j.why, 160) || 'That one can’t be made here: no real people, known characters or minors.' };
   return { ok: true, look: L.clean(j.look, 420), niche: L.clean(j.niche, 40), handle: String(j.handle || '').toLowerCase().replace(/[^a-z0-9._]/g, '').slice(0, 24) };
 }
-const facePrompt = look => `Photorealistic vertical phone photo of a fictional adult TikTok creator: ${look}. They face the camera, filming themselves, soft ring light glow on the face, natural skin texture, sharp face, candid, subject centered with room above the head, no text, no letters, no logos, no watermark.`;
+const facePrompt = look => `Photorealistic vertical phone photo of a fictional TikTok creator: ${look}. Facing the camera as if filming itself, soft ring light glow, viral AI TikTok energy, sharp detail, candid, subject centered with room above the head, no text, no letters, no logos, no watermark.`;
 async function vertical(buf) {
   return require('sharp')(buf, { limitInputPixels: 60e6 }).resize(720, 1280, { fit: 'cover', position: 'attention' }).jpeg({ quality: 88, mozjpeg: true }).toBuffer();
 }
@@ -105,12 +105,13 @@ async function caption(k, trend) {
   return t && !L.BANNED.test(t) ? t : `${TRENDS[trendOf(trend)].label.toLowerCase()} check ✓ #aigenerated #fyp #ai${k.symbol ? ' $' + k.symbol : ''}`;
 }
 // start one video: from a portrait (JPEG buffer), in a trend. Kept as a row the page and the cycle both poll.
-async function film({ jpeg, trend, kind, mint = null, face = null, k = {} }) {
+async function film({ jpeg, trend, kind, mint = null, face = null, k = {}, imageUrl = null }) {
   if (!(await L.spendVid())) return { ok: false, error: 'Today’s video budget is spent. It resets at 00:00 UTC.' };
   const t = trendOf(trend);
-  let s = await L.videoStart(videoPrompt(t), jpeg.toString('base64'), { resolution: '720x1280' });
+  let s = L.HF && imageUrl ? await L.hfStart(videoPrompt(t), imageUrl) : { ok: false };
+  if (!s.ok) s = await L.videoStart(videoPrompt(t), jpeg.toString('base64'), { resolution: '720x1280' });
   if (!s.ok && /resolution/i.test(s.error || '')) s = await L.videoStart(videoPrompt(t), jpeg.toString('base64'));
-  if (!s.ok) return { ok: false, error: 'The camera didn’t start. Try again in a minute.', why: s.error };
+  if (!s.ok) return { ok: false, error: /minimum balance|balance|credit/i.test(s.error || '') ? 'Filming opens soon: the house’s video credits aren’t loaded yet. Your TikToker’s photo works now.' : 'The camera didn’t start. Try again in a minute.', why: s.error, paused: /balance|credit/i.test(s.error || '') };
   const cap = await caption(k, t);
   const r = await L.q(`INSERT INTO t0_vids (mint, face, kind, trend, caption, model, op) VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id`, [mint, face, kind, t, cap, s.model, JSON.stringify(s.operation)]);
   return { ok: true, job: r[0].id, trend: t, caption: cap };
@@ -121,7 +122,7 @@ async function poll(v) {
   if (v.polled_at && Date.now() - new Date(v.polled_at) < 3000) return v;
   await L.q(`UPDATE t0_vids SET polled_at=now() WHERE id=$1`, [v.id]);
   const op = typeof v.op === 'string' ? JSON.parse(v.op) : v.op;
-  const st = await L.videoStatus(v.model, op);
+  const st = String(v.model || '').startsWith('higgsfield/') ? await L.hfStatus(op && op.hf) : await L.videoStatus(v.model, op);
   if (!st.ok) { if (Date.now() - new Date(v.at) > 15 * 60000) { await L.q(`UPDATE t0_vids SET status='error', err=$2 WHERE id=$1`, [v.id, st.error]); return { ...v, status: 'error', err: st.error }; } return v; }
   if (st.status === 'pending') { if (Date.now() - new Date(v.at) > 20 * 60000) { await L.q(`UPDATE t0_vids SET status='error', err='timed out' WHERE id=$1`, [v.id]); return { ...v, status: 'error' }; } return v; }
   if (st.status === 'error') { await L.q(`UPDATE t0_vids SET status='error', err=$2 WHERE id=$1`, [v.id, st.error]); return { ...v, status: 'error', err: st.error }; }
@@ -132,10 +133,10 @@ async function poll(v) {
   return { ...v, status: 'done' };
 }
 // a launched coin's next video: the next trend in turn, from its portrait
-async function shift(k) {
+async function shift(k, site) {
   const t = TREND_KEYS[(Number(k.vids) || 0) % TREND_KEYS.length];
   if (!k.face) return { ok: false, error: 'no portrait' };
   await L.q(`UPDATE t0_coins SET vid_at=now() WHERE mint=$1`, [k.mint]);
-  return film({ jpeg: Buffer.from(k.face), trend: k.niche && TRENDS[k.niche] && !k.vids ? k.niche : t, kind: 'shift', mint: k.mint, k });
+  return film({ jpeg: Buffer.from(k.face), trend: k.niche && TRENDS[k.niche] && !k.vids ? k.niche : t, kind: 'shift', mint: k.mint, k, imageUrl: site ? site + '/f/' + k.mint : null });
 }
 module.exports = { settle, routingOf, readBoard, TRENDS, TREND_KEYS, trendOf, lookOf, makeFace, vertical, square, caption, film, poll, shift };

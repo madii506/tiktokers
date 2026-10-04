@@ -21,7 +21,7 @@ module.exports = async (req, res) => {
       const r = await I.readBoard(); out.coins = r.coins; out.changes = r.changes;
       const due = await L.q(`SELECT mint, name, symbol, niche, voice, look, face, vids FROM t0_coins WHERE status='live' AND state IN ('awake','ascended') AND face IS NOT NULL
         AND (vid_at IS NULL OR vid_at < now() - interval '6 hours') ORDER BY vid_at NULLS FIRST LIMIT ${PER_CYCLE}`);
-      await L.pool(due, 3, async k => { const p = await I.shift(k); if (p.ok) out.videos++; else out.why = p.why || p.error; });
+      await L.pool(due, 3, async k => { const p = await I.shift(k, L.origin(req)); if (p.ok) out.videos++; else out.why = p.why || p.error; });
       await L.q(`UPDATE t0_vids SET mp4=NULL, status='gone' WHERE kind='test' AND at < now() - interval '2 days' AND status='done'`).catch(() => {});
     } finally {
       await L.q(`UPDATE t0_state SET cycle=$1, lock_at=NULL, next_at=now() + interval '25 minutes' WHERE id=1`, [cycle]);

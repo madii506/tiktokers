@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
       const img = await fetch(L.origin(req) + '/assets/img/c' + n + '.jpg', { signal: AbortSignal.timeout(10000) }).then(r => r.ok ? r.arrayBuffer() : null).catch(() => null);
       if (!img) return L.send(res, 200, { ok: false, error: 'No such creator.' });
       const jpeg = await T.vertical(Buffer.from(img));
-      return L.send(res, 200, await T.film({ jpeg, trend: b.trend, kind: 'brand', face: n, k: { name: 'a TIKTOKERS creator' } }));
+      return L.send(res, 200, await T.film({ jpeg, trend: b.trend, kind: 'brand', face: n, k: { name: 'a TIKTOKERS creator' }, imageUrl: L.origin(req) + '/assets/img/c' + n + '.jpg' }));
     }
     if (b.mint) {
       const mint = String(b.mint);
@@ -60,7 +60,7 @@ module.exports = async (req, res) => {
       if (!k || k.status !== 'live') return L.send(res, 200, { ok: false, error: 'It isn’t launched yet.' });
       const any = await L.q(`SELECT id FROM t0_vids WHERE mint=$1 AND status<>'error' LIMIT 1`, [mint]);
       if (any.length) return L.send(res, 200, { ok: true, job: any[0].id, already: true });
-      return L.send(res, 200, await T.shift(k));
+      return L.send(res, 200, await T.shift(k, L.origin(req)));
     }
     const face = String(b.face || '');
     if (!/^\d{1,12}$/.test(face)) return L.send(res, 200, { ok: false, error: 'Make your TikToker first.' });
@@ -68,6 +68,6 @@ module.exports = async (req, res) => {
     const f = (await L.q('SELECT id, img, line, look FROM t0_faces WHERE id=$1', [face]))[0];
     if (!f) return L.send(res, 200, { ok: false, error: 'That TikToker expired. Make a new one.' });
     const k = { name: L.clean(b.name, 32), symbol: L.clean(b.symbol, 10).replace(/^\$/, '').toUpperCase(), voice: f.line, look: f.look };
-    L.send(res, 200, await T.film({ jpeg: Buffer.from(f.img), trend: b.trend, kind: 'test', face: f.id, k }));
+    L.send(res, 200, await T.film({ jpeg: Buffer.from(f.img), trend: b.trend, kind: 'test', face: f.id, k, imageUrl: L.origin(req) + '/api/face?id=' + f.id }));
   } catch (e) { L.send(res, 200, { ok: false, error: 'The camera didn’t start. Try again.', why: String(e && e.message).slice(0, 160) }); }
 };

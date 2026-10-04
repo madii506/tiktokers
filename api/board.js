@@ -3,7 +3,7 @@
 const L = require('./_lib');
 const COLS = `mint, slot, name, symbol, niche, payer, born_at, state, mcap_sol, complete, last_trade_at, vault_lamports, vids, vid_at`;
 module.exports = async (req, res) => {
-  const base = { open: !!L.STUDIO, studio: L.STUDIO || null };
+  const base = { open: !!L.STUDIO, studio: L.STUDIO || null, hf: L.HF };
   if (!L.dbReady()) return L.send(res, 200, { ok: true, offline: true, infl: [], posts: [], ...base });
   try {
     await L.ready();
