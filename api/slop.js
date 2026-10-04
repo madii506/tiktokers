@@ -35,7 +35,14 @@ const SLOP = [
   "A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, hammering nails into a giant open laptop on a workbench like a carpenter, bright sparks flying, tools and traffic cones around it, workshop with warm lights",
   "A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, wearing a call-center headset at a tiny help desk and juggling five ringing phones at once, blank chat bubbles floating around it, office at night",
   "A crew of six identical small cute white robots with rounded boxy heads, black glossy screen faces with glowing orange pill-shaped eyes and orange construction hard hats, posing together like a proud team photo in front of a tiny office building at night",
+  "!A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, full body, standing proudly and holding a clipboard in one hand while pointing forward with the other like a boss",
+  "!A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, full body, holding a smartphone up with one hand to film itself and waving, a small ring light on a stand beside it",
+  "!A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, full body, sitting cross-legged and typing on a smartphone with both thumbs, three blank white speech bubbles floating above its head",
+  "!A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, full body, holding a paintbrush and a wooden paint palette, colorful paint splattered on its body and hard hat",
+  "!A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, full body, sitting with an open laptop on its lap and holding a small hammer, a few bright sparks flying from the laptop",
+  "!A small cute white robot with a rounded boxy head, a black glossy screen face with two glowing orange pill-shaped eyes and an orange construction hard hat, full body, wearing a headset with a microphone and holding an old telephone handset in each hand, talking happily",
 ];
+const KEEP_BLACK = ' Photorealistic collectible toy photo, the whole robot in frame and centered with empty space around it, isolated on a pure solid black background, no floor, no shadow, soft studio light from the front, sharp detail, no text, no letters, no logos, no watermark.';
 const KEEP = ' Photorealistic, viral AI TikTok video still, vertical 9:16 phone framing, subject centered, funny and absurd, sharp detail, no text, no letters, no captions, no logos, no watermark.';
 module.exports = async (req, res) => {
   L.setOidc(req);
@@ -45,7 +52,8 @@ module.exports = async (req, res) => {
     await L.ready();
     let r = (await L.q('SELECT img FROM t0_brand WHERE n=$1', [100 + n]))[0];
     if (!r && !L.limited('slop', 30, 3600000)) {
-      const p = await L.photo(SLOP[n] + '.' + KEEP, null, 55000, '768x1344');
+      const sp = SLOP[n], prompt = sp[0] === '!' ? sp.slice(1) + '.' + KEEP_BLACK : sp + '.' + KEEP;
+      const p = await L.photo(prompt, null, 55000, '768x1344');
       if (!p.ok) return L.send(res, 200, { ok: false, error: p.error });
       const img = await require('sharp')(p.buf).resize(720, 1280, { fit: 'cover', position: 'attention' }).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
       await L.q('INSERT INTO t0_brand (n, img) VALUES ($1,$2) ON CONFLICT (n) DO UPDATE SET img=EXCLUDED.img, at=now()', [100 + n, img]); r = { img };
