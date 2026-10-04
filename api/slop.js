@@ -20,6 +20,14 @@ const SLOP = [
   "An owl marketing director with glasses at a whiteboard covered in colorful sticky notes, explaining the plan to the camera",
   "A bulldog in sunglasses posing like a supermodel at a glamorous photoshoot with flashing cameras",
   "A parrot in a headset running a call center desk, talking excitedly, rows of desks behind it",
+  "A capybara construction worker in a yellow hard hat and hi-vis vest typing on a laptop on a building site at sunset",
+  "A small sleek humanoid robot foreman in an orange hard hat holding a tablet and directing a busy team on a glowing construction site at night",
+  "A beaver engineer in a yellow hard hat and hi-vis vest building a tall tower out of plain gold coins with tiny tools",
+  "A raccoon welder in a welding mask and hi-vis vest welding a giant plain gold coin, bright sparks flying in a dark workshop",
+  "A crew of ants in tiny yellow hard hats carrying a giant plain gold coin across a wooden workbench",
+  "A golden retriever site manager in a white hard hat holding a coffee and a walkie-talkie at a busy construction site in the morning",
+  "A frog in a hi-vis vest and yellow hard hat driving a tiny excavator digging into a big pile of plain gold coins",
+  "An owl engineer in a yellow hard hat studying blueprints at a desk with three glowing monitors at night",
 ];
 const KEEP = ' Photorealistic, viral AI TikTok video still, vertical 9:16 phone framing, subject centered, funny and absurd, sharp detail, no text, no letters, no captions, no logos, no watermark.';
 module.exports = async (req, res) => {
