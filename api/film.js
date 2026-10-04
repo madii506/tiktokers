@@ -44,13 +44,13 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') return L.send(res, 405, { ok: false, error: 'POST only.' });
     const b = await L.body(req, 8192);
     if (b.brand != null) {
-      const n = Number(b.brand); if (!(n >= 1 && n <= 12)) return L.send(res, 200, { ok: false, error: 'No such creator.' });
+      const n = Number(b.brand); if (!(n >= 1 && n <= 10)) return L.send(res, 200, { ok: false, error: 'No such creator.' });
       const have = await L.q(`SELECT id, status FROM t0_vids WHERE kind='brand' AND face=$1 AND status<>'error'`, [n]);
       if (have.length) return L.send(res, 200, { ok: true, job: have[0].id, status: have[0].status });
-      const img = await fetch(L.origin(req) + '/assets/img/c' + n + '.jpg', { signal: AbortSignal.timeout(10000) }).then(r => r.ok ? r.arrayBuffer() : null).catch(() => null);
+      const img = await fetch(L.origin(req) + '/api/slop?n=' + n, { signal: AbortSignal.timeout(50000) }).then(r => r.ok ? r.arrayBuffer() : null).catch(() => null);
       if (!img) return L.send(res, 200, { ok: false, error: 'No such creator.' });
       const jpeg = await T.vertical(Buffer.from(img));
-      return L.send(res, 200, await T.film({ jpeg, trend: b.trend, kind: 'brand', face: n, k: { name: 'a TIKTOKERS creator' }, imageUrl: L.origin(req) + '/assets/img/c' + n + '.jpg' }));
+      return L.send(res, 200, await T.film({ jpeg, trend: b.trend, kind: 'brand', face: n, k: { name: 'a TIKTOKERS creator' }, imageUrl: L.origin(req) + '/api/slop?n=' + n }));
     }
     if (b.mint) {
       const mint = String(b.mint);
