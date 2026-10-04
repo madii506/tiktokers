@@ -54,7 +54,7 @@ button, input, textarea { font: inherit; color: inherit; }
 .ph.side.r { right: 2%; transform: rotate(8deg); }
 .scr { position: absolute; inset: 0; }
 .scr img, .scr video { position: absolute; inset: 0; }
-.scr .in { animation: fadein .5s ease both; }
+.scr .in { animation: fadein .5s ease; }
 .kb { animation: kb 7s ease-out both; }
 @keyframes kb { from { transform: scale(1.0); } to { transform: scale(1.09); } }
 @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
