@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>TIKTOKERS</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A coin with its own AI TikToker.">
+<meta name="theme-color" content="#08080a">
+<meta property="og:title" content="TIKTOKERS">
+<meta property="og:image" content="https://tiktokers-pi.vercel.app/assets/img/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="64x64" href="/assets/img/fav-64.png">
+<link rel="apple-touch-icon" href="/assets/img/fav-180.png">
+<link rel="preload" href="/assets/fonts/BC-Black.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/tt.css?v=2">
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="/" aria-label="TIKTOKERS"><img src="/assets/img/fav-64.png" alt=""><span class="gl" data-t="TIKTOKERS">TIKTOKERS</span></a>
+  <nav class="nav" aria-label="Sections"><a href="/#trends">trends</a><a href="/#create">create</a><a href="/#foryou">for you</a><a href="/#coins">coins</a><a href="/#faq">faq</a></nav>
+  <button class="wallet" id="walletBtn" type="button"><i></i><span>connect</span></button>
+</header>
+<span id="live-sr" class="sr" aria-live="polite"></span>
+<main id="cw">
+  <div class="cp">
+    <div class="ph big" id="pv">
+      <div class="scr" id="pvScr"></div>
+      <div class="ui"><div class="cap"><b id="pvWho"></b><span id="pvCap"></span></div></div>
+    </div>
+    <div>
+      <h1 id="cName">…</h1>
+      <div class="tick" id="cTick"></div>
+      <p class="status" id="cState"></p>
+      <p class="line2" id="bio"></p>
+      <div class="acts" id="cActs"></div>
+      <p class="status" id="cStatus" role="status"></p>
+      <dl class="nums" id="nums"></dl>
+      <header class="sh" style="margin:40px 0 20px"><span>▶</span><h2>its videos</h2></header>
+      <div class="fy" id="vids"></div>
+      <header class="sh" style="margin:40px 0 16px"><span>%</span><h2>the split, locked</h2></header>
+      <dl class="split" id="split"></dl>
+      <header class="sh" style="margin:40px 0 16px"><span>·</span><h2>what happened</h2></header>
+      <ul class="log" id="log"></ul>
+    </div>
+  </div>
+</main>
+<div class="sheet-w" id="sheet" hidden><div class="boxw" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"><div class="bar2"><span id="sheetTitle"></span><button class="x" id="sheetX" type="button" aria-label="Close">×</button></div><div class="inner" id="sheetBody"></div></div></div>
+<div class="toast" id="toast" role="status"></div>
+<script src="/assets/js/core.js?v=2"></script>
+<script src="/assets/js/live.js?v=2"></script>
+<script src="/assets/js/cross.js?v=2"></script>
+<script src="/assets/js/child.js?v=2"></script>
+</body>
+</html>
