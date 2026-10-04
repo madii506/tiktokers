@@ -223,9 +223,25 @@
   (function reveal() {
     if (calm || !('IntersectionObserver' in window)) return;
     const io = new IntersectionObserver(es => es.forEach(en => { if (!en.isIntersecting) return; en.target.classList.add('seen'); io.unobserve(en.target); }), { rootMargin: '0px 0px -8% 0px' });
-    $$('.sh, .st, .how li, .faq details, .preview').forEach((el, i) => { el.classList.add('rv'); el.style.setProperty('--d', (i % 4) * .06 + 's'); io.observe(el); });
+    $$('.sh, .st, .how li, .faq details, .preview, .tr').forEach((el, i) => { el.classList.add('rv'); el.style.setProperty('--d', (i % 4) * .06 + 's'); io.observe(el); });
     const links = $$('.nav a'); const nio = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) links.forEach(a => a.classList.toggle('on', a.hash === '#' + en.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
     ['trends', 'create', 'foryou', 'coins', 'faq'].forEach(id => nio.observe(document.getElementById(id)));
+  })();
+
+
+  // ---------- motion: the creator wall, the phone that follows the pointer, tilting trend cards, a cursor dot ----------
+  (function motion() {
+    const cards = (start) => { let h = ''; for (let k = 0; k < 12; k++) { const n = ((k + start) % 6) + 1; h += `<div class="wc"><img src="/assets/img/c${n}.jpg" alt="" loading="lazy"><span>${TRENDS[(k + start) % 8][1]}</span><i style="--dl:-${(k * 0.7).toFixed(1)}s"></i></div>`; } return h + h; };
+    $$('.wall .row').forEach((r, i) => { r.querySelector('.rt').innerHTML = cards(i * 3); });
+    if (calm || matchMedia('(hover: none)').matches) return;
+    const ph = $('.stage .ph.main'), stage = $('.stage');
+    stage.addEventListener('mousemove', e => { const b = stage.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5; ph.style.transform = `rotateY(${x * 10}deg) rotateX(${-y * 8}deg)`; });
+    stage.addEventListener('mouseleave', () => { ph.style.transform = ''; });
+    document.addEventListener('mousemove', e => { const t = e.target.closest && e.target.closest('.tr'); $$('.tr').forEach(c => { if (c !== t) c.style.transform = ''; }); if (!t) return; const b = t.getBoundingClientRect(), x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5; t.style.transform = `perspective(700px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) translateY(-4px)`; });
+    const dot = document.createElement('div'); dot.className = 'cursor-dot'; document.body.appendChild(dot);
+    let mx = innerWidth / 2, my = innerHeight / 2, dx = mx, dy = my;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.classList.toggle('big', !!(e.target.closest && e.target.closest('a,button,.tr,.ph.main'))); });
+    (function loop() { dx += (mx - dx) * .2; dy += (my - dy) * .2; dot.style.transform = `translate(${dx - 5}px, ${dy - 5}px)`; requestAnimationFrame(loop); })();
   })();
 
   renderTrends(); splitShow(); refreshGo(); loadBoard();
