@@ -12,6 +12,14 @@ const SLOP = [
   'A raccoon doing a mukbang, eating a huge pile of french fries at a table lit by a ring light, cheeks full',
   'A hamster lifting a tiny barbell in a miniature gym, sweatband on its head, intense focus, mirror behind it',
   'A goat doing an outfit check in a designer puffer jacket and sneakers on a city street, posing for the camera',
+  "A pigeon in a tiny tailored suit giving a big sales pitch on a conference stage, spotlight on it, giant blank glowing screen behind it",
+  "A dachshund salesman in a striped suit shouting into a megaphone on a busy city street, people walking by",
+  "A crab in a business suit shouting into a phone on a busy stock trading floor, glowing monitors behind it",
+  "A cat influencer holding a plain shiny product box toward the camera in an unboxing video, ring light, cozy room",
+  "A llama hosting a late-night TV infomercial, pointing at a shiny gadget on a table, bright studio lights",
+  "An owl marketing director with glasses at a whiteboard covered in colorful sticky notes, explaining the plan to the camera",
+  "A bulldog in sunglasses posing like a supermodel at a glamorous photoshoot with flashing cameras",
+  "A parrot in a headset running a call center desk, talking excitedly, rows of desks behind it",
 ];
 const KEEP = ' Photorealistic, viral AI TikTok video still, vertical 9:16 phone framing, subject centered, funny and absurd, sharp detail, no text, no letters, no captions, no logos, no watermark.';
 module.exports = async (req, res) => {
